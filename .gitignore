@@ -1,5 +1,5 @@
 # Node modules (always ignore)
-node_modules/
+**/node_modules/
 
 # Build outputs
 dist/
