@@ -53,7 +53,6 @@ export function ViewLogEntriesTable({
 			logDate: new Date(logEntry.logDate),
 			logValue: logEntry.logValue,
 		});
-		// there could be a delay here where the modal shows empty values before the state updates
 		setIsEditEntryOpen(true);
 	}, []);
 

@@ -49,7 +49,7 @@ export async function createLogEntry({
 export async function updateLogEntry(
 	logEntry: EditLogEntryRequest
 ): Promise<LogEntryResponse> {
-	const res = await fetch(`/api/logs/${logEntry.logId}/log-entries`, {
+	const res = await fetch(`/api/logs/log-entries`, {
 		body: JSON.stringify({ logEntry }),
 		method: 'put',
 		headers: {

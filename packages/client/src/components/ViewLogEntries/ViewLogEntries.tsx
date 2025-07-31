@@ -10,10 +10,10 @@ import { ViewLogEntriesEmptyPage } from './ViewLogEntriesEmptyPage';
 import { ViewLogEntriesHeader } from './ViewLogEntriesHeader';
 import { ViewLogEntriesTable } from './ViewLogEntriesTable';
 import {
-	LogEntryRequest,
 	DateLike,
 	EditLogEntryRequest,
 } from '@mapistry/take-home-challenge-shared';
+import { Uuid } from '@mapistry/take-home-challenge-server/src/domain/entities/Uuid';
 
 export type LogEntryFormValues = {
 	logDate: DateLike;
@@ -33,7 +33,7 @@ export function ViewLogEntries() {
 	const [isEditEntryOpen, setIsEditEntryOpen] = useState(false);
 	const [initialEditValues, setInitialEditValues] =
 		useState<EditLogEntryRequest>({
-			id: '',
+			id: '' as unknown as Uuid,
 			logId: '',
 			logDate: '',
 			logValue: 0,
@@ -59,7 +59,6 @@ export function ViewLogEntries() {
 
 	const handleEditLogEntry = useCallback(
 		async (logEntry) => {
-			console.log('logEntry :>> ', logEntry);
 			await updateLogEntry(logEntry);
 			setIsEditEntryOpen(false);
 			refreshLogEntries();

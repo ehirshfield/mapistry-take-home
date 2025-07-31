@@ -1,3 +1,4 @@
+import { Uuid } from '../../server/src/domain/entities/Uuid';
 export type DateLike = Date | string;
 
 export type LogEntryResponse = {
@@ -13,7 +14,7 @@ export type LogEntryRequest = {
 };
 
 export type EditLogEntryRequest = LogEntryRequest & {
-	id: string;
+	id: Uuid;
 	logId: string;
 };
 

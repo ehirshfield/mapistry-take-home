@@ -9,7 +9,7 @@ interface LogEntryProps {
 }
 
 type CreateLogEntryProps = LogEntryProps;
-type UpdateLogEntryProps = LogEntryProps & { id: string };
+type UpdateLogEntryProps = LogEntryProps & { id: Uuid };
 
 export class LogEntry extends Entity<LogEntryProps> {
 	static createFromPersistence(props: LogEntryProps, id: string) {
@@ -31,7 +31,7 @@ export class LogEntry extends Entity<LogEntryProps> {
 				'Cannot update log entry. Props are not valid.'
 			);
 		}
-		return new LogEntry(updateLogEntryProps);
+		return new LogEntry(updateLogEntryProps, updateLogEntryProps.id);
 	}
 
 	private static isValid(createLogEntryProps: CreateLogEntryProps): boolean {

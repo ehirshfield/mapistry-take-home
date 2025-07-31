@@ -1,5 +1,5 @@
 import { LogEntry } from '../../domain/entities/LogEntry';
-import { Database } from '../../shared/database';
+import { Database, LogEntriesRecord } from '../../shared/database';
 import { RecordNotFoundError } from '../../shared/errors';
 import { LogEntriesPersistenceMapper } from '../mappers/LogEntriesPersistenceMapper';
 
