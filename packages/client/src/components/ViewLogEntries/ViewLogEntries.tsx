@@ -9,6 +9,15 @@ import { LogEntryModal } from '../LogEntryModal/LogEntryModal';
 import { ViewLogEntriesEmptyPage } from './ViewLogEntriesEmptyPage';
 import { ViewLogEntriesHeader } from './ViewLogEntriesHeader';
 import { ViewLogEntriesTable } from './ViewLogEntriesTable';
+import {
+	LogEntryRequest,
+	DateLike,
+} from '@mapistry/take-home-challenge-shared';
+
+export type LogEntryFormValues = {
+	logDate: DateLike;
+	logValue: number;
+};
 
 const Container = styled.div`
 	height: 100vh;
@@ -21,6 +30,12 @@ export function ViewLogEntries() {
 	});
 	const [isCreateEntryOpen, setIsCreateEntryOpen] = useState(false);
 	const [isEditEntryOpen, setIsEditEntryOpen] = useState(false);
+	const [initialEditValues, setInitialEditValues] = useState<LogEntryRequest>(
+		{
+			logDate: '',
+			logValue: 0,
+		}
+	);
 
 	const handleAddNew = useCallback(async () => {
 		setIsCreateEntryOpen(true);
@@ -43,6 +58,8 @@ export function ViewLogEntries() {
 	const handleEditLogEntry = useCallback(
 		async (logEntry) => {
 			console.log('Edit log entry:', logEntry);
+			// TODO: Make edit to DB here
+
 			setIsEditEntryOpen(false);
 			refreshLogEntries();
 		},
@@ -62,6 +79,7 @@ export function ViewLogEntries() {
 			<ViewLogEntriesTable
 				logId={lastVisitedLog.id}
 				setIsEditEntryOpen={setIsEditEntryOpen}
+				setInitialEditValues={setInitialEditValues}
 			/>
 		) : (
 			<ViewLogEntriesEmptyPage />
@@ -72,15 +90,15 @@ export function ViewLogEntries() {
 		<Container>
 			{isCreateEntryOpen && (
 				<LogEntryModal
-					mode='create'
+					header='Create Log Entry'
 					handleClose={handleCloseModal}
 					handleSubmit={handleCreateLogEntry}
 				/>
 			)}
 			{isEditEntryOpen && (
 				<LogEntryModal
-					mode='edit'
-					initialValues={{ logDate: '', logValue: 0 }}
+					header='Edit Log Entry'
+					initialValues={initialEditValues}
 					handleClose={handleCloseModal}
 					handleSubmit={handleEditLogEntry}
 				/>

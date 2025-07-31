@@ -1,4 +1,7 @@
-import { LogEntryResponse } from '@mapistry/take-home-challenge-shared';
+import {
+	DateLike,
+	LogEntryResponse,
+} from '@mapistry/take-home-challenge-shared';
 import { useCallback } from 'react';
 import styled from 'styled-components';
 import { useLogEntries } from '../../hooks/useLogEntries';
@@ -7,6 +10,10 @@ import { deleteLogEntry } from '../../shared/apiClient/logsApi';
 interface ViewLogEntriesTableProps {
 	logId: string;
 	setIsEditEntryOpen: (value: boolean) => void;
+	setInitialEditValues: (values: {
+		logDate: DateLike;
+		logValue: number;
+	}) => void;
 }
 
 const StyledTable = styled.table`
@@ -28,6 +35,7 @@ const StyledTable = styled.table`
 export function ViewLogEntriesTable({
 	logId,
 	setIsEditEntryOpen,
+	setInitialEditValues,
 }: ViewLogEntriesTableProps) {
 	const { logEntries, refreshLogEntries } = useLogEntries({ logId });
 	const handleDelete = useCallback(
@@ -41,6 +49,12 @@ export function ViewLogEntriesTable({
 		[refreshLogEntries]
 	);
 	const handleEdit = useCallback(async (logEntry) => {
+		setInitialEditValues({
+			// Unsure about the format needed here
+			logDate: new Date(logEntry.logDate),
+			logValue: logEntry.logValue,
+		});
+		// there could be a delay here where the modal shows empty values before the state updates
 		setIsEditEntryOpen(true);
 	}, []);
 

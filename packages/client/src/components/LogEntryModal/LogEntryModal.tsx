@@ -1,12 +1,13 @@
-import { CreateLogEntryRequest } from '@mapistry/take-home-challenge-shared';
+import { LogEntryRequest } from '@mapistry/take-home-challenge-shared';
 import { ReactNode } from 'react';
 import styled from 'styled-components';
+import { toLocalYYYYMMDD } from '../../utils/dateUtils';
 
 interface LogEntryModalProps {
-	mode: 'create' | 'edit';
-	initialValues?: { logDate: string; logValue: number };
+	header: string;
+	initialValues?: LogEntryRequest;
 	handleClose: () => void;
-	handleSubmit: (logEntry: CreateLogEntryRequest) => void;
+	handleSubmit: (logEntry: LogEntryRequest) => void;
 }
 
 const Modal = styled.div`
@@ -73,7 +74,7 @@ const ButtonContainer = styled.div`
 `;
 
 export function LogEntryModal({
-	mode,
+	header,
 	initialValues,
 	handleClose,
 	handleSubmit,
@@ -84,9 +85,7 @@ export function LogEntryModal({
 				<CloseButton type='button' onClick={handleClose}>
 					X
 				</CloseButton>
-				<Header>
-					{mode === 'create' ? 'Create Log Entry' : 'Edit Log Entry'}
-				</Header>
+				<Header>{header}</Header>
 				<StyledForm
 					onSubmit={(event: React.SyntheticEvent) => {
 						event.preventDefault();
@@ -106,7 +105,11 @@ export function LogEntryModal({
 						<input
 							type='date'
 							name='logDate'
-							defaultValue={initialValues?.logDate || ''}
+							defaultValue={
+								initialValues?.logDate
+									? toLocalYYYYMMDD(initialValues.logDate)
+									: ''
+							}
 						/>
 					</label>
 
@@ -124,9 +127,7 @@ export function LogEntryModal({
 						<button type='button' onClick={handleClose}>
 							Cancel
 						</button>
-						<button type='submit'>
-							{mode === 'create' ? 'Save' : 'Update'}
-						</button>
+						<button type='submit'>Save</button>
 					</ButtonContainer>
 				</StyledForm>
 			</ModalContent>
