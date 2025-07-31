@@ -56,3 +56,20 @@ logEntriesController.delete(
 		}
 	}
 );
+
+logEntriesController.put('/logs/log-entries', async (req, res) => {
+	const { logEntry } = req.body;
+	const logEntryService = new LogEntriesService();
+	try {
+		const logEntries = await logEntryService.updateLogEntry(logEntry);
+		res.json(logEntries);
+	} catch (e: unknown) {
+		if (e instanceof ValidationError) {
+			res.status(HttpStatusCode.INVALID_DATA);
+			res.send(e.toString());
+		} else {
+			res.status(HttpStatusCode.SERVER_ERROR);
+			res.send();
+		}
+	}
+});

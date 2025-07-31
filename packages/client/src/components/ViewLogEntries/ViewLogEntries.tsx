@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { useLastVisitedLog } from '../../hooks/useLastVisitedLog';
 import { useLogEntries } from '../../hooks/useLogEntries';
-import { createLogEntry } from '../../shared/apiClient/logsApi';
+import { createLogEntry, updateLogEntry } from '../../shared/apiClient/logsApi';
 import { Error } from '../shared/Error';
 import { Loading } from '../shared/Loading';
 import { LogEntryModal } from '../LogEntryModal/LogEntryModal';
@@ -12,6 +12,7 @@ import { ViewLogEntriesTable } from './ViewLogEntriesTable';
 import {
 	LogEntryRequest,
 	DateLike,
+	EditLogEntryRequest,
 } from '@mapistry/take-home-challenge-shared';
 
 export type LogEntryFormValues = {
@@ -30,12 +31,13 @@ export function ViewLogEntries() {
 	});
 	const [isCreateEntryOpen, setIsCreateEntryOpen] = useState(false);
 	const [isEditEntryOpen, setIsEditEntryOpen] = useState(false);
-	const [initialEditValues, setInitialEditValues] = useState<LogEntryRequest>(
-		{
+	const [initialEditValues, setInitialEditValues] =
+		useState<EditLogEntryRequest>({
+			id: '',
+			logId: '',
 			logDate: '',
 			logValue: 0,
-		}
-	);
+		});
 
 	const handleAddNew = useCallback(async () => {
 		setIsCreateEntryOpen(true);
@@ -57,9 +59,8 @@ export function ViewLogEntries() {
 
 	const handleEditLogEntry = useCallback(
 		async (logEntry) => {
-			console.log('Edit log entry:', logEntry);
-			// TODO: Make edit to DB here
-
+			console.log('logEntry :>> ', logEntry);
+			await updateLogEntry(logEntry);
 			setIsEditEntryOpen(false);
 			refreshLogEntries();
 		},

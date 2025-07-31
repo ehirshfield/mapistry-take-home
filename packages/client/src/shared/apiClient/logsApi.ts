@@ -1,6 +1,7 @@
 import {
 	LogEntryRequest,
 	LogEntryResponse,
+	EditLogEntryRequest,
 } from '@mapistry/take-home-challenge-shared';
 
 export interface CreateLogEntryParams {
@@ -43,6 +44,23 @@ export async function createLogEntry({
 	}
 	const newlogEntry: CreateLogEntryResponse = await res.json();
 	return newlogEntry;
+}
+
+export async function updateLogEntry(
+	logEntry: EditLogEntryRequest
+): Promise<LogEntryResponse> {
+	const res = await fetch(`/api/logs/${logEntry.logId}/log-entries`, {
+		body: JSON.stringify({ logEntry }),
+		method: 'put',
+		headers: {
+			'content-type': 'application/json',
+		},
+	});
+	if (!res.ok) {
+		throw new Error('Failed to update log entry');
+	}
+	const updatedLogEntry: LogEntryResponse = await res.json();
+	return updatedLogEntry;
 }
 
 export async function deleteLogEntry(logEntry: LogEntryResponse) {

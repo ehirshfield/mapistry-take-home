@@ -1,11 +1,14 @@
-import { LogEntryRequest } from '@mapistry/take-home-challenge-shared';
+import {
+	EditLogEntryRequest,
+	LogEntryRequest,
+} from '@mapistry/take-home-challenge-shared';
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { toLocalYYYYMMDD } from '../../utils/dateUtils';
 
 interface LogEntryModalProps {
 	header: string;
-	initialValues?: LogEntryRequest;
+	initialValues?: LogEntryRequest | EditLogEntryRequest;
 	handleClose: () => void;
 	handleSubmit: (logEntry: LogEntryRequest) => void;
 }
@@ -93,10 +96,22 @@ export function LogEntryModal({
 							logDate: { value: string };
 							logValue: { value: string };
 						};
-						const logEntry = {
+						let logEntry: LogEntryRequest | EditLogEntryRequest = {
 							logDate: new Date(target.logDate.value),
 							logValue: parseInt(target.logValue.value, 10),
 						};
+						// Type guard to check if initialValues is an edit request
+						if (
+							initialValues &&
+							'id' in initialValues &&
+							'logId' in initialValues
+						) {
+							logEntry = {
+								...logEntry,
+								id: initialValues.id,
+								logId: initialValues.logId,
+							};
+						}
 						handleSubmit(logEntry);
 					}}
 				>

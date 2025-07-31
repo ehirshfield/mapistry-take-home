@@ -1,5 +1,6 @@
 import {
 	DateLike,
+	EditLogEntryRequest,
 	LogEntryResponse,
 } from '@mapistry/take-home-challenge-shared';
 import { useCallback } from 'react';
@@ -10,10 +11,7 @@ import { deleteLogEntry } from '../../shared/apiClient/logsApi';
 interface ViewLogEntriesTableProps {
 	logId: string;
 	setIsEditEntryOpen: (value: boolean) => void;
-	setInitialEditValues: (values: {
-		logDate: DateLike;
-		logValue: number;
-	}) => void;
+	setInitialEditValues: (value: EditLogEntryRequest) => void;
 }
 
 const StyledTable = styled.table`
@@ -50,7 +48,8 @@ export function ViewLogEntriesTable({
 	);
 	const handleEdit = useCallback(async (logEntry) => {
 		setInitialEditValues({
-			// Unsure about the format needed here
+			id: logEntry.id,
+			logId: logEntry.logId,
 			logDate: new Date(logEntry.logDate),
 			logValue: logEntry.logValue,
 		});
