@@ -1,77 +1,77 @@
 import {
-	LogEntryRequest,
-	LogEntryResponse,
-	EditLogEntryRequest,
+  LogEntryRequest,
+  LogEntryResponse,
+  EditLogEntryRequest,
 } from '@mapistry/take-home-challenge-shared';
 
 export interface CreateLogEntryParams {
-	logId: string;
-	logEntry: LogEntryRequest;
+  logId: string;
+  logEntry: LogEntryRequest;
 }
 
 export type FetchLogEntriesResponse = LogEntryResponse[];
 export type CreateLogEntryResponse = LogEntryResponse;
 
 export async function fetchLogEntries(
-	logId: string
+  logId: string
 ): Promise<FetchLogEntriesResponse> {
-	const res = await fetch(`/api/logs/${logId}/log-entries`, {
-		method: 'get',
-		headers: {
-			'content-type': 'application/json',
-		},
-	});
-	if (!res.ok) {
-		throw new Error('Failed to fetch log entries');
-	}
-	const logEntries: FetchLogEntriesResponse = await res.json();
-	return logEntries;
+  const res = await fetch(`/api/logs/${logId}/log-entries`, {
+    method: 'get',
+    headers: {
+      'content-type': 'application/json',
+    },
+  });
+  if (!res.ok) {
+    throw new Error('Failed to fetch log entries');
+  }
+  const logEntries: FetchLogEntriesResponse = await res.json();
+  return logEntries;
 }
 
 export async function createLogEntry({
-	logId,
-	logEntry,
+  logId,
+  logEntry,
 }: CreateLogEntryParams): Promise<CreateLogEntryResponse> {
-	const res = await fetch(`/api/logs/${logId}/log-entries`, {
-		body: JSON.stringify({ logEntry }),
-		method: 'post',
-		headers: {
-			'content-type': 'application/json',
-		},
-	});
-	if (!res.ok) {
-		throw new Error('Failed to create log entry');
-	}
-	const newlogEntry: CreateLogEntryResponse = await res.json();
-	return newlogEntry;
+  const res = await fetch(`/api/logs/${logId}/log-entries`, {
+    body: JSON.stringify({ logEntry }),
+    method: 'post',
+    headers: {
+      'content-type': 'application/json',
+    },
+  });
+  if (!res.ok) {
+    throw new Error('Failed to create log entry');
+  }
+  const newlogEntry: CreateLogEntryResponse = await res.json();
+  return newlogEntry;
 }
 
 export async function updateLogEntry(
-	logEntry: EditLogEntryRequest
+  logEntry: EditLogEntryRequest
 ): Promise<LogEntryResponse> {
-	const res = await fetch(`/api/logs/log-entries`, {
-		body: JSON.stringify({ logEntry }),
-		method: 'put',
-		headers: {
-			'content-type': 'application/json',
-		},
-	});
-	if (!res.ok) {
-		throw new Error('Failed to update log entry');
-	}
-	const updatedLogEntry: LogEntryResponse = await res.json();
-	return updatedLogEntry;
+  const res = await fetch(`/api/logs/log-entries`, {
+    body: JSON.stringify({ logEntry }),
+    method: 'put',
+    headers: {
+      'content-type': 'application/json',
+    },
+  });
+  if (!res.ok) {
+    throw new Error('Failed to update log entry');
+  }
+  const updatedLogEntry: LogEntryResponse = await res.json();
+  return updatedLogEntry;
 }
 
 export async function deleteLogEntry(logEntry: LogEntryResponse) {
-	const { logId, id } = logEntry;
-	const res = await fetch(`/api/logs/${logId}/log-entries/${id}`, {
-		method: 'delete',
-		headers: {
-			'content-type': 'application/json',
-		},
-	});
-	if (!res.ok) {
-		throw new Error('Failed to delete log entry');
-	}
+  const { logId, id } = logEntry;
+  const res = await fetch(`/api/logs/${logId}/log-entries/${id}`, {
+    method: 'delete',
+    headers: {
+      'content-type': 'application/json',
+    },
+  });
+  if (!res.ok) {
+    throw new Error('Failed to delete log entry');
+  }
 }

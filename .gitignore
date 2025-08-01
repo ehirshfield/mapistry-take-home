@@ -52,3 +52,5 @@ __snapshots__/
 # Optional: Turbo / Nx / monorepo tools
 .turbo/
 .cache/
+
+.prettierrc

@@ -2,34 +2,34 @@ import { Uuid } from '../../server/src/domain/entities/Uuid';
 export type DateLike = Date | string;
 
 export type LogEntryResponse = {
-	id: string;
-	logId: string;
-	logDate: DateLike;
-	logValue: number;
+  id: string;
+  logId: string;
+  logDate: DateLike;
+  logValue: number;
 };
 
 export type LogEntryRequest = {
-	logDate: DateLike;
-	logValue: number;
+  logDate: DateLike;
+  logValue: number;
 };
 
 export type EditLogEntryRequest = LogEntryRequest & {
-	id: Uuid;
-	logId: string;
+  id: Uuid;
+  logId: string;
 };
 
 export enum HttpStatusCode {
-	OK = 200,
-	CREATED = 201,
-	TEMPORARY_REDIRECT = 302,
-	INVALID_REQUEST = 400,
-	INVALID_CREDENTIALS = 401,
-	UNAUTHORIZED_REQUEST = 403,
-	NOT_FOUND = 404,
-	CONFLICT = 409,
-	MISSING_QUERY_PARAM = 422,
-	MISSING_DATA = 422,
-	INVALID_DATA = 422,
-	SERVER_ERROR = 500,
-	UNIMPLEMENTED_ERROR = 501,
+  OK = 200,
+  CREATED = 201,
+  TEMPORARY_REDIRECT = 302,
+  INVALID_REQUEST = 400,
+  INVALID_CREDENTIALS = 401,
+  UNAUTHORIZED_REQUEST = 403,
+  NOT_FOUND = 404,
+  CONFLICT = 409,
+  MISSING_QUERY_PARAM = 422,
+  MISSING_DATA = 422,
+  INVALID_DATA = 422,
+  SERVER_ERROR = 500,
+  UNIMPLEMENTED_ERROR = 501,
 }
