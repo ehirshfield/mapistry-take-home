@@ -62,7 +62,7 @@ export class Database {
   }
 
   public static async findById(
-    logEntryId: string,
+    logEntryId: string
   ): Promise<LogEntriesRecord | null> {
     await this.simulateDbSlowness();
     const db = await fs.readFileSync(FILE_NAME, 'utf8');
@@ -78,6 +78,19 @@ export class Database {
     allEntries.splice(index, 1);
     await fs.writeFileSync(FILE_NAME, JSON.stringify(allEntries));
     return logEntryId;
+  }
+
+  public static async updateLogEntry(entry: LogEntriesRecord) {
+    await this.simulateDbSlowness();
+    const db = await fs.readFileSync(FILE_NAME, 'utf8');
+    const allEntries = JSON.parse(db) as LogEntriesRecord[];
+    const index = allEntries.findIndex((le) => le.id === entry.id);
+    if (index !== -1) {
+      allEntries[index] = entry;
+      await fs.writeFileSync(FILE_NAME, JSON.stringify(allEntries));
+      return entry;
+    }
+    throw new Error(`Log entry with id ${entry.id} not found`);
   }
 
   private static simulateDbSlowness(ms = 1000) {

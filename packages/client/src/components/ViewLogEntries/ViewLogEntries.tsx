@@ -2,13 +2,23 @@ import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { useLastVisitedLog } from '../../hooks/useLastVisitedLog';
 import { useLogEntries } from '../../hooks/useLogEntries';
-import { createLogEntry } from '../../shared/apiClient/logsApi';
+import { createLogEntry, updateLogEntry } from '../../shared/apiClient/logsApi';
 import { Error } from '../shared/Error';
 import { Loading } from '../shared/Loading';
-import { CreateLogEntryModal } from './CreateLogEntryModal';
+import { LogEntryModal } from '../LogEntryModal/LogEntryModal';
 import { ViewLogEntriesEmptyPage } from './ViewLogEntriesEmptyPage';
 import { ViewLogEntriesHeader } from './ViewLogEntriesHeader';
 import { ViewLogEntriesTable } from './ViewLogEntriesTable';
+import {
+  DateLike,
+  EditLogEntryRequest,
+} from '@mapistry/take-home-challenge-shared';
+import { Uuid } from '@mapistry/take-home-challenge-server/src/domain/entities/Uuid';
+
+export type LogEntryFormValues = {
+  logDate: DateLike;
+  logValue: number;
+};
 
 const Container = styled.div`
   height: 100vh;
@@ -20,6 +30,14 @@ export function ViewLogEntries() {
     logId: lastVisitedLog.id,
   });
   const [isCreateEntryOpen, setIsCreateEntryOpen] = useState(false);
+  const [isEditEntryOpen, setIsEditEntryOpen] = useState(false);
+  const [initialEditValues, setInitialEditValues] =
+    useState<EditLogEntryRequest>({
+      id: '' as unknown as Uuid,
+      logId: '',
+      logDate: '',
+      logValue: 0,
+    });
 
   const handleAddNew = useCallback(async () => {
     setIsCreateEntryOpen(true);
@@ -27,7 +45,8 @@ export function ViewLogEntries() {
 
   const handleCloseModal = useCallback(() => {
     setIsCreateEntryOpen(false);
-  }, [setIsCreateEntryOpen]);
+    setIsEditEntryOpen(false);
+  }, [setIsCreateEntryOpen, setIsEditEntryOpen]);
 
   const handleCreateLogEntry = useCallback(
     async (logEntry) => {
@@ -35,7 +54,16 @@ export function ViewLogEntries() {
       setIsCreateEntryOpen(false);
       refreshLogEntries();
     },
-    [lastVisitedLog, refreshLogEntries, setIsCreateEntryOpen],
+    [lastVisitedLog, refreshLogEntries, setIsCreateEntryOpen]
+  );
+
+  const handleEditLogEntry = useCallback(
+    async (logEntry) => {
+      await updateLogEntry(logEntry);
+      setIsEditEntryOpen(false);
+      refreshLogEntries();
+    },
+    [refreshLogEntries, setIsEditEntryOpen]
   );
 
   function content() {
@@ -48,7 +76,11 @@ export function ViewLogEntries() {
       );
     }
     return logEntries.length ? (
-      <ViewLogEntriesTable logId={lastVisitedLog.id} />
+      <ViewLogEntriesTable
+        logId={lastVisitedLog.id}
+        setIsEditEntryOpen={setIsEditEntryOpen}
+        setInitialEditValues={setInitialEditValues}
+      />
     ) : (
       <ViewLogEntriesEmptyPage />
     );
@@ -57,9 +89,18 @@ export function ViewLogEntries() {
   return (
     <Container>
       {isCreateEntryOpen && (
-        <CreateLogEntryModal
+        <LogEntryModal
+          header="Create Log Entry"
           handleClose={handleCloseModal}
-          handleCreate={handleCreateLogEntry}
+          handleSubmit={handleCreateLogEntry}
+        />
+      )}
+      {isEditEntryOpen && (
+        <LogEntryModal
+          header="Edit Log Entry"
+          initialValues={initialEditValues}
+          handleClose={handleCloseModal}
+          handleSubmit={handleEditLogEntry}
         />
       )}
       <ViewLogEntriesHeader

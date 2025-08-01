@@ -1,10 +1,16 @@
-import { CreateLogEntryRequest } from '@mapistry/take-home-challenge-shared';
+import {
+  EditLogEntryRequest,
+  LogEntryRequest,
+} from '@mapistry/take-home-challenge-shared';
 import { ReactNode } from 'react';
 import styled from 'styled-components';
+import { toLocalYYYYMMDD } from '../../utils/dateUtils';
 
-interface CreateLogEntryProps {
+interface LogEntryModalProps {
+  header: string;
+  initialValues?: LogEntryRequest | EditLogEntryRequest;
   handleClose: () => void;
-  handleCreate: (logEntry: CreateLogEntryRequest) => void;
+  handleSubmit: (logEntry: LogEntryRequest) => void;
 }
 
 const Modal = styled.div`
@@ -70,17 +76,19 @@ const ButtonContainer = styled.div`
   }
 `;
 
-export function CreateLogEntryModal({
+export function LogEntryModal({
+  header,
+  initialValues,
   handleClose,
-  handleCreate,
-}: CreateLogEntryProps) {
+  handleSubmit,
+}: LogEntryModalProps) {
   return (
     <Modal>
       <ModalContent>
         <CloseButton type="button" onClick={handleClose}>
           X
         </CloseButton>
-        <Header>Create Log Entry</Header>
+        <Header>{header}</Header>
         <StyledForm
           onSubmit={(event: React.SyntheticEvent) => {
             event.preventDefault();
@@ -88,21 +96,45 @@ export function CreateLogEntryModal({
               logDate: { value: string };
               logValue: { value: string };
             };
-            const logEntry = {
+            let logEntry: LogEntryRequest | EditLogEntryRequest = {
               logDate: new Date(target.logDate.value),
               logValue: parseInt(target.logValue.value, 10),
             };
-            handleCreate(logEntry);
+            // Type guard to check if initialValues is an edit request
+            if (
+              initialValues &&
+              'id' in initialValues &&
+              'logId' in initialValues
+            ) {
+              logEntry = {
+                ...logEntry,
+                id: initialValues.id,
+                logId: initialValues.logId,
+              };
+            }
+            handleSubmit(logEntry);
           }}
         >
           <label htmlFor="logDate">
             Date:&nbsp;
-            <input type="date" name="logDate" />
+            <input
+              type="date"
+              name="logDate"
+              defaultValue={
+                initialValues?.logDate
+                  ? toLocalYYYYMMDD(initialValues.logDate)
+                  : ''
+              }
+            />
           </label>
 
           <label htmlFor="logValue">
             Value:&nbsp;
-            <input type="text" name="logValue" />
+            <input
+              type="text"
+              name="logValue"
+              defaultValue={initialValues?.logValue?.toString() || ''}
+            />
           </label>
           <ButtonContainer>
             <button type="button" onClick={handleClose}>

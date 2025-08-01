@@ -7,7 +7,12 @@ const nodeExternals = require('webpack-node-externals');
 module.exports = {
   mode: 'development',
   externalsPresets: { node: true },
-  externals: [nodeExternals()],
+  externals: [
+    nodeExternals(),
+    {
+      'iconv-lite': 'commonjs iconv-lite',
+    },
+  ],
   entry: {
     app: './src/app.ts',
   },

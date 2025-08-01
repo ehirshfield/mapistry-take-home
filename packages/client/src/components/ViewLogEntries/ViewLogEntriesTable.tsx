@@ -1,4 +1,8 @@
-import { LogEntryResponse } from '@mapistry/take-home-challenge-shared';
+import {
+  DateLike,
+  EditLogEntryRequest,
+  LogEntryResponse,
+} from '@mapistry/take-home-challenge-shared';
 import { useCallback } from 'react';
 import styled from 'styled-components';
 import { useLogEntries } from '../../hooks/useLogEntries';
@@ -6,6 +10,8 @@ import { deleteLogEntry } from '../../shared/apiClient/logsApi';
 
 interface ViewLogEntriesTableProps {
   logId: string;
+  setIsEditEntryOpen: (value: boolean) => void;
+  setInitialEditValues: (value: EditLogEntryRequest) => void;
 }
 
 const StyledTable = styled.table`
@@ -24,7 +30,11 @@ const StyledTable = styled.table`
   }
 `;
 
-export function ViewLogEntriesTable({ logId }: ViewLogEntriesTableProps) {
+export function ViewLogEntriesTable({
+  logId,
+  setIsEditEntryOpen,
+  setInitialEditValues,
+}: ViewLogEntriesTableProps) {
   const { logEntries, refreshLogEntries } = useLogEntries({ logId });
   const handleDelete = useCallback(
     async (logEntry) => {
@@ -34,8 +44,17 @@ export function ViewLogEntriesTable({ logId }: ViewLogEntriesTableProps) {
         refreshLogEntries();
       }
     },
-    [refreshLogEntries],
+    [refreshLogEntries]
   );
+  const handleEdit = useCallback(async (logEntry) => {
+    setInitialEditValues({
+      id: logEntry.id,
+      logId: logEntry.logId,
+      logDate: new Date(logEntry.logDate),
+      logValue: logEntry.logValue,
+    });
+    setIsEditEntryOpen(true);
+  }, []);
 
   function columns() {
     return (
@@ -52,7 +71,11 @@ export function ViewLogEntriesTable({ logId }: ViewLogEntriesTableProps) {
   function actions(logEntry: LogEntryResponse) {
     return (
       <div>
-        <button type="button" style={{ marginRight: '0.5rem' }}>
+        <button
+          type="button"
+          style={{ marginRight: '0.5rem' }}
+          onClick={() => handleEdit(logEntry)}
+        >
           Edit
         </button>
         <button type="button" onClick={() => handleDelete(logEntry)}>

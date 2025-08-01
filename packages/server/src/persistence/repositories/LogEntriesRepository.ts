@@ -1,5 +1,5 @@
 import { LogEntry } from '../../domain/entities/LogEntry';
-import { Database } from '../../shared/database';
+import { Database, LogEntriesRecord } from '../../shared/database';
 import { RecordNotFoundError } from '../../shared/errors';
 import { LogEntriesPersistenceMapper } from '../mappers/LogEntriesPersistenceMapper';
 
@@ -16,7 +16,7 @@ export class LogEntriesRepository {
     const record = await Database.findById(logEntryId);
     if (!record) {
       throw new RecordNotFoundError(
-        `log entry not found for id: ${logEntryId}`,
+        `log entry not found for id: ${logEntryId}`
       );
     }
     return LogEntriesPersistenceMapper.fromPersistence(record);
@@ -25,5 +25,11 @@ export class LogEntriesRepository {
   async destroyLogEntry(logEntry: LogEntry): Promise<string> {
     await Database.deleteLogEntry(logEntry.id.value);
     return logEntry.id.value;
+  }
+
+  async updateLogEntry(logEntry: LogEntry): Promise<LogEntry> {
+    const dto = LogEntriesPersistenceMapper.toPersistence(logEntry);
+    const updatedEntry = await Database.updateLogEntry(dto);
+    return LogEntriesPersistenceMapper.fromPersistence(updatedEntry);
   }
 }

@@ -1,5 +1,6 @@
 import { LogEntry } from '../../domain/entities/LogEntry';
 import { LogEntriesRecord } from '../../shared/database';
+import { Uuid } from '../../domain/entities/Uuid';
 
 export class LogEntriesPersistenceMapper {
   static toPersistence(logEntry: LogEntry): LogEntriesRecord {
@@ -14,7 +15,14 @@ export class LogEntriesPersistenceMapper {
   static fromPersistence(logEntriesRecord: LogEntriesRecord): LogEntry {
     return LogEntry.createFromPersistence(
       logEntriesRecord,
-      logEntriesRecord.id,
+      logEntriesRecord.id
+    );
+  }
+
+  static fromUpdatePersistence(logEntriesRecord: LogEntriesRecord): LogEntry {
+    return LogEntry.createFromPersistence(
+      logEntriesRecord,
+      logEntriesRecord.id
     );
   }
 }

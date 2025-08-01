@@ -3,6 +3,7 @@ import {
   LOG_2_ID,
   LogEntryResponse,
 } from '@mapistry/take-home-challenge-shared';
+import { Uuid } from '../../domain/entities/Uuid';
 import { Database, LogEntriesRecord } from '../../shared/database';
 import { LogEntriesService } from './LogEntriesService';
 
@@ -65,6 +66,39 @@ describe('LogEntriesService', () => {
 
     it('returns the deleted log entry id', () => {
       expect(result).toBe(entryToDelete!.id);
+    });
+  });
+
+  describe('updateLogEntry', () => {
+    let entryToUpdate: LogEntriesRecord | undefined;
+    let result: LogEntryResponse;
+
+    beforeAll(async () => {
+      [entryToUpdate] = await Database.getAllLogEntries(LOG_2_ID);
+      const updateData = {
+        id: entryToUpdate!.id as unknown as Uuid,
+        logId: LOG_2_ID,
+        logDate: '2024-01-02',
+        logValue: 30,
+      };
+      result = await subject.updateLogEntry(updateData);
+    });
+
+    it('updates the log entry with the given data', async () => {
+      const allEntries = await subject.getLogEntries(LOG_2_ID);
+      expect(allEntries).toHaveLength(1);
+      expect(new Date(allEntries[0].logDate).toISOString()).toEqual(
+        new Date('2024-01-02').toISOString()
+      );
+      expect(allEntries[0].logValue).toEqual(30);
+    });
+
+    it('returns the updated log entry', () => {
+      expect(result.id).toBe(entryToUpdate!.id);
+      expect(new Date(result.logDate).toISOString()).toEqual(
+        new Date('2024-01-02').toISOString()
+      );
+      expect(result.logValue).toEqual(30);
     });
   });
 });
